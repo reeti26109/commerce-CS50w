@@ -22,10 +22,10 @@
     <div class="card bg-dark text-white col-lg-6 col-md-10 col-sm-12" >
         <div class="card-header"><h5>Place bid:</h5></div>
         <div class="card-body">
-            <form action="#" method="post">
+            <form action="{% url 'product' name=product.name %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <input autofocus class="form-control" type="number" name="bid" placeholder="Amount ($)" min="{{ product.starting_bid }}">
+                    <input autofocus class="form-control" type="number" name="bid" placeholder="Amount ($)">
                 </div>
                 <input class="btn btn-primary" type="submit" value="Place">
             </form>

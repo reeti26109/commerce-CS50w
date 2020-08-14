@@ -14,6 +14,9 @@ class Listing(models.Model):
     time=models.DateTimeField(auto_now_add=True)
     image_link=models.CharField(max_length=200, null=True, blank=True, default=None )
 
-
+class Bid(models.Model):
+    user = models.CharField(max_length=64)
+    name = models.CharField(max_length=64)
+    bid = models.IntegerField()
 
 

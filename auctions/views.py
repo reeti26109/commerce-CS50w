@@ -81,9 +81,31 @@ def active_listings(request):
 @login_required(login_url='/login')
 def product(request,name):
     product= Listing.objects.get(name=name)
-    return render(request, "auctions/product.html",{
-        "product": product
-    })
+    if request.method =="POST":
+        newbid= int(request.POST.get('bid'))
+        if (product.starting_bid >= newbid):
+            return render(request, "auctions/product.html",{
+            "product": product,
+            "message": "Bid should be higher than current price!"
+        })
+        else:
+            o = Bid()
+            o.user=request.user.username
+            o.name=product.name
+            o.bid=newbid
+            o.save()
+            f=  Listing.objects.get(name=name)
+            f.starting_bid=newbid
+            f.save()
+            product= Listing.objects.get(name=name)
+            return render(request, "auctions/product.html",{
+            "product": product,
+            "message": "Your bid is placed!"
+            })
+    else:
+        return render(request, "auctions/product.html",{
+            "product": product
+        })
 
 
 @login_required(login_url='/login')
@@ -122,3 +144,5 @@ def category(request, category):
         "empty": empty,
         "category": category
     })
+
+

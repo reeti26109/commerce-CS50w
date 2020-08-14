@@ -15,8 +15,8 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#Navbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-               <a class="navbar-brand" href="#"><img  id="navlogo" src="{% static 'auctions/auction.jpg' %}" height="30" width="41"></a>
-               <div class="collapse navbar-collapse" id="Navbar">
+                <a class="navbar-brand" href="#"><img  id="navlogo" src="{% static 'auctions/auction.jpg' %}" height="30" width="41"></a>
+                <div class="collapse navbar-collapse" id="Navbar">
                     {% if user.is_authenticated %}
                         <ul class="navbar-nav mr-auto">
                             <li class="nav-item active"><a class="nav-link" href="{% url 'home' %}"><span class="fa fa-home fa-lg"></span> Home</a></li>
