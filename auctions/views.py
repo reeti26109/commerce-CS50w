@@ -62,7 +62,7 @@ def register(request):
                 "message": "Username already taken."
             })
         login(request, user)
-        return HttpResponseRedirect(reverse("index"))
+        return HttpResponseRedirect(reverse("active_listings"))
     else:
         return render(request, "auctions/register.html")
 
@@ -81,12 +81,20 @@ def active_listings(request):
 @login_required(login_url='/login')
 def product(request,name):
     product= Listing.objects.get(name=name)
+    comments= Comment.objects.filter(name=name)
+    viewer= request.user.username
+    if (product.seller==viewer):
+        seller=True
+    else:
+        seller=False
     if request.method =="POST":
         newbid= int(request.POST.get('bid'))
         if (product.starting_bid >= newbid):
             return render(request, "auctions/product.html",{
             "product": product,
-            "message": "Bid should be higher than current price!"
+            "message": "Bid should be higher than current price!",
+            "comments": comments,
+            "seller": seller
         })
         else:
             o = Bid()
@@ -100,11 +108,15 @@ def product(request,name):
             product= Listing.objects.get(name=name)
             return render(request, "auctions/product.html",{
             "product": product,
-            "message": "Your bid is placed!"
-            })
+            "message": "Your bid is placed!",
+            "comments": comments,
+            "seller": seller
+        })
     else:
         return render(request, "auctions/product.html",{
-            "product": product
+            "product": product,
+            "comments": comments,
+            "seller": seller
         })
 
 
@@ -146,3 +158,23 @@ def category(request, category):
     })
 
 
+@login_required(login_url='/login')
+def comment(request, name):
+    product= Listing.objects.get(name=name)
+    comment= request.POST.get('comment')
+    viewer= request.user.username
+    if (product.seller==viewer):
+        seller=True
+    else:
+        seller=False
+    c= Comment()
+    c.user=request.user.username
+    c.name=product.name
+    c.content=comment
+    c.save()
+    comments= Comment.objects.filter(name=name)
+    return render(request, "auctions/product.html",{
+        "product": product,
+        "comments": comments,
+        "seller": seller
+    })

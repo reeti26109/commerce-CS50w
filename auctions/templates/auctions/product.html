@@ -35,7 +35,14 @@
     <div class="card bg-dark text-white col-lg-8 col-md-10 col-sm-12" >
         <div class="card-header"><h5>Comments:</h5></div>
         <div class="card-body">
-            <form action="#" method="post">
+            <div>
+                {% for comment in comments %}
+                    <div><strong>{{ comment.user }}:</strong> {{ comment.content }}<br>{{ comment.time }}
+                    </div>
+                    <hr>
+                {% endfor %}
+            </div>
+            <form action="{% url 'comment' name=product.name %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <textarea autofocus class="form-control" name="comment" placeholder="Add comment" id="comment"></textarea>
@@ -45,6 +52,9 @@
         </div>
     </div>
 
+    {% if seller %}
+        <input class="btn btn-danger" type="submit" value="Close Bid" >
+    {% endif %}
 {% endblock %}
 
             

@@ -19,4 +19,10 @@ class Bid(models.Model):
     name = models.CharField(max_length=64)
     bid = models.IntegerField()
 
+class Comment(models.Model):
+    user = models.CharField(max_length=64)
+    name = models.CharField(max_length=64)
+    content = models.TextField()
+    time= models.DateTimeField(auto_now_add=True)
+
 
