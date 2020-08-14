@@ -104,3 +104,21 @@ def create_listing(request):
         return HttpResponseRedirect(reverse('active_listings'))
     else:
         return render(request, "auctions/createlisting.html")
+
+
+@login_required(login_url='/login')
+def categories(request):
+    return render(request, "auctions/categories.html")
+
+@login_required(login_url='/login')
+def category(request, category):
+    products= Listing.objects.filter(category=category)
+    if len(products)==0:
+        empty= True
+    else:
+        empty= False
+    return render(request, "auctions/category.html",{
+        "products": products,
+        "empty": empty,
+        "category": category
+    })

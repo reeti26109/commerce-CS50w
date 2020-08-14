@@ -14,3 +14,6 @@ class Listing(models.Model):
     time=models.DateTimeField(auto_now_add=True)
     image_link=models.CharField(max_length=200, null=True, blank=True, default=None )
 
+
+
+

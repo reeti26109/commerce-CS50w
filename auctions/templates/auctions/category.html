@@ -1,0 +1,40 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    {% if empty %}
+        <div><h2>{{category}}</h2><h5>No listings of this category.</h5></div>
+        <div class="row">
+            <div class="card col-lg-8 col-sm-12">
+                <img src="{% static 'auctions/empty.png' %}" alt="emptylistimage" class="img-responsive">
+            </div>
+        </div>
+    {% else %}
+
+        {% for product in products %}
+            <h2>{{category}}</h2>
+            <div class="card bg-dark text-white col-lg-8 col-md-10 col-sm-12" >
+                <img class="card-img-top" src="{{ product.image_link }}" alt="Card image" id="product_img" style="margin-top: 10px;">
+                <div class="card-body">
+                    <h5>{{ product.name }}</h5>
+                    <p> Category: {{ product.category}}<br>
+                        Price: ${{product.starting_bid}}<br>
+                        Seller: {{ product.seller }}<br>
+                        {{ product.description }}<br><br>
+                        Created on: {{product.time}}
+                    </p>
+                    <a role="button" href="{% url 'product' name=product.name %}" class="btn btn-info">View</a>
+                
+                    
+                
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

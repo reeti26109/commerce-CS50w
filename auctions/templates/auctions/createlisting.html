@@ -17,7 +17,16 @@
                         <input class="form-control" autofocus type="text" name="name" placeholder="Name of product">
                     </div>
                     <div class="form-group">
-                        <input class="form-control" type="text" name="category" placeholder="Category">
+                        <select class="form-control" name="category" placeholder="Category" required>
+                            <option value="">Choose a Category</option>
+                            <option value="fashion">Fashion</option>
+                            <option value="tools">Tools</option>
+                            <option value="toys">Toys</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="accessories">Accessories</option>
+                            <option value="books">Books</option>
+                            <option value="car">Car</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <input class="form-control" type="number" name="price" placeholder="Stating Bid ($)">

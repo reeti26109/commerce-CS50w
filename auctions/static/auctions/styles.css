@@ -2,7 +2,7 @@ body {
     padding: 10px;
 }
 
-#login_img,{
+#login_img{
     height: 50vh;
 }
 
@@ -86,6 +86,10 @@ p{
     height: 160px;
 }
 
-#create_img{
+#create_img, #category_img{
     margin-top: 10px;
+}
+
+.card-img-top{
+    height:60vh;
 }

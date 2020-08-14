@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+    <h2>Categories</h2>
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <div class="card bg-dark text-white col-lg-8 col-md-10 col-sm-12" >
+        <img class="card-img-top" src="{% static 'auctions/category.jpg' %}" alt="Card image" id="category_img">
+        <div class="card-body">
+            <div class="card"><a href="{% url 'category' category='Fashion' %}"><i class="fa fa-tshirt mr-5"></i> Fashion</a></div>
+            <div class="card"><a href="{% url 'category' category='Tools' %}"><i class="fa fa-gavel mr-5"></i>Tools</a></div>
+            <div class="card"><a href="{% url 'category' category='Toys' %}"><i class="fa fa-dice mr-5"></i> Toys</a></div>
+            <div class="card"><a href="{% url 'category' category='Electronics' %}"><i class="fa fa-laptop mr-5"></i> Electronics</a></div>
+            <div class="card"><a href="{% url 'category' category='Acessories' %}"><i class="fa fa-headset mr-5"></i> Accesories</a></div>
+            <div class="card"><a href="{% url 'category' category='Book' %}"><i class="fa fa-book-open mr-5"></i> Book</a></div>
+            <div class="card"><a href="{% url 'category' category='Car' %}"><i class="fa fa-car mr-5"></i> Car</a></div>
+        </div>
+    </div>
+
+
+{% endblock %}
