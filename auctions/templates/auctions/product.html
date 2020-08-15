@@ -16,7 +16,12 @@
                 <strong>Description:</strong>{{ product.description }}<br><br>
                 <strong>Created on:</strong> {{product.time}}
             </p>
-            <a role="button" href="#" class="btn btn-success">Add to Watchlist</a><br>
+            {% if added %}
+                <a href="{% url 'watchlist' name=product.name %}" class="btn btn-danger" name="remove">Remove from Watchlist</a>
+            {% else %}
+                <a href="{% url 'watchlist' name=product.name %}" class="btn btn-success" name="add">Add to Watchlist</a>
+            {% endif %}
+            <br>
         </div>
     </div>
     <div class="card bg-dark text-white col-lg-6 col-md-10 col-sm-12" >

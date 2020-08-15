@@ -178,3 +178,34 @@ def comment(request, name):
         "comments": comments,
         "seller": seller
     })
+
+
+
+@login_required(login_url='/login')
+def watchlist(request,name):
+    w = Watchlist.objects.filter(
+        name=name, user=request.user.username)
+    comments= Comment.objects.filter(name=name)
+    if w:
+        w.delete()
+        product=Listing.objects.get(name=name)
+        added = Watchlist.objects.filter(
+            name=name, user=request.user.username)
+        return render(request, "auctions/product.html", {
+            "product": product,
+            "added": added,
+            "comments": comments
+        })
+    else:
+        product = Listing.objects.get(name=name)
+        a = Watchlist()
+        a.user= request.user.username
+        a.name= product.name
+        a.save()
+        added = Watchlist.objects.filter(
+            name=name, user=request.user.username)
+        return render(request, "auctions/product.html", {
+            "product": product,
+            "added": added,
+            "comments": comments
+        })

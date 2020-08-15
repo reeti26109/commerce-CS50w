@@ -25,4 +25,8 @@ class Comment(models.Model):
     content = models.TextField()
     time= models.DateTimeField(auto_now_add=True)
 
+class Watchlist(models.Model):
+    user = models.CharField(max_length=64)
+    name= models.CharField(max_length=64)
+
 
