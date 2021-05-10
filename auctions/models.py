@@ -11,6 +11,7 @@ class Listing(models.Model):
     category=models.CharField(max_length=64)
     seller=models.CharField(max_length=64)
     starting_bid=models.IntegerField()
+    current_bid=models.IntegerField()
     time=models.DateTimeField(auto_now_add=True)
     image_link=models.CharField(max_length=200, null=True, blank=True, default=None )
 
@@ -25,8 +26,14 @@ class Comment(models.Model):
     content = models.TextField()
     time= models.DateTimeField(auto_now_add=True)
 
-class Watchlist(models.Model):
-    user = models.CharField(max_length=64)
-    name= models.CharField(max_length=64)
 
+class Winner(models.Model):
+    seller = models.CharField(max_length=64)
+    winner = models.CharField(max_length=64)
+    winprice = models.IntegerField()
+    name = models.CharField(max_length=64)
+
+class ProductList(models.Model):
+    user = models.CharField(max_length=64)
+    products = models.TextField(null=True)
 

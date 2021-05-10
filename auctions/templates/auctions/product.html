@@ -11,7 +11,8 @@
         <img class="card-img-top" src="{{ product.image_link }}" alt="Card image" id="product_img" style="margin-top: 10px;">
         <div class="card-body">
             <p> <strong>Category:</strong> {{ product.category}}<br>
-                <strong>Price:</strong> ${{product.starting_bid}}<br>
+                <strong>Starting Price:</strong> ${{product.starting_bid}}<br>
+                <strong>Current Price:</strong> ${{product.current_bid}}<br>
                 <strong>Seller:</strong> {{ product.seller }}<br>
                 <strong>Description:</strong>{{ product.description }}<br><br>
                 <strong>Created on:</strong> {{product.time}}
@@ -24,6 +25,7 @@
             <br>
         </div>
     </div>
+    {% if not seller %}
     <div class="card bg-dark text-white col-lg-6 col-md-10 col-sm-12" >
         <div class="card-header"><h5>Place bid:</h5></div>
         <div class="card-body">
@@ -36,7 +38,7 @@
             </form>
         </div>
     </div>
-
+    {% endif %}
     <div class="card bg-dark text-white col-lg-8 col-md-10 col-sm-12" >
         <div class="card-header"><h5>Comments:</h5></div>
         <div class="card-body">
@@ -58,7 +60,7 @@
     </div>
 
     {% if seller %}
-        <input class="btn btn-danger" type="submit" value="Close Bid" >
+        <a href="{% url 'closebid' name=product.name %}" class="btn btn-danger" name="close">Close Bid</a>
     {% endif %}
 {% endblock %}
 

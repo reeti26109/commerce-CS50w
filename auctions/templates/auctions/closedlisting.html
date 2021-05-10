@@ -1,0 +1,31 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <h2>Closed Listings</h2>
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    {% if empty %}
+        <div><h5>No closed listings yet.</h5></div>
+        <div class="row">
+            <div class="card col-lg-8 col-sm-12">
+                <img src="{% static 'auctions/empty.png' %}" alt="emptylistimage" class="img-responsive">
+            </div>
+        </div>
+    {% else %}
+        {% for winner in winners %}
+            <div class="card bg-dark text-white col-lg-6 col-md-10 col-sm-12" >
+                <div class="card-body">
+                    <div class="card-header"><h5>{{ winner.name }}</h5></div>
+                    <p> Seller: {{ winner.seller }}<br>
+                        Winner: {{ winner.winner }}<br><br>
+                        Closing Price: ${{ winner.winprice }}
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

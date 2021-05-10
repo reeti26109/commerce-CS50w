@@ -9,7 +9,7 @@
     {% endif %}
     <div class="row">
         <div class="card bg-dark text-white col-lg-6 col-md-10 col-sm-12" >
-            <img class="card-img-top" src="{% static 'auctions/create.jpg' %}" alt="Card image" id="create_img">
+            <img class="card-img-top" src="{% static 'auctions/create.png' %}" alt="Card image" id="create_img">
             <div class="card-body">
                 <form action="{% url 'create_listing' %}" method="post">
                     {% csrf_token %}

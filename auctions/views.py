@@ -4,9 +4,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from annoying.functions import get_object_or_None
 
 from .models import *
 
+import simplejson as json
 
 # def index(request):
 #     return render(request, "auctions/index.html")
@@ -89,7 +91,7 @@ def product(request,name):
         seller=False
     if request.method =="POST":
         newbid= int(request.POST.get('bid'))
-        if (product.starting_bid >= newbid):
+        if (product.current_bid >= newbid):
             return render(request, "auctions/product.html",{
             "product": product,
             "message": "Bid should be higher than current price!",
@@ -103,7 +105,7 @@ def product(request,name):
             o.bid=newbid
             o.save()
             f=  Listing.objects.get(name=name)
-            f.starting_bid=newbid
+            f.current_bid=newbid
             f.save()
             product= Listing.objects.get(name=name)
             return render(request, "auctions/product.html",{
@@ -128,6 +130,7 @@ def create_listing(request):
         f.description= request.POST["description"]
         f.category= request.POST["category"]
         f.starting_bid= request.POST["price"]
+        f.current_bid= request.POST["price"]
         f.seller= request.user.username
         if request.POST.get('image_link'):
             f.image_link = request.POST.get('image_link')
@@ -179,33 +182,110 @@ def comment(request, name):
         "seller": seller
     })
 
+@login_required(login_url='/login')
+def Watchlist(request):
+    Products=[]
+    user=request.user.username
+    try:
+        obj=ProductList.objects.get(user=user)
+    except ProductList.DoesNotExist:
+        obj=None
+    if(obj is not None):
+        jsonDec = json.decoder.JSONDecoder()
+        List = jsonDec.decode(obj.products)
+        for item in List:
+            try:
+                product=Listing.objects.get(name=item)
+                Products.append(product)
+            except Listing.DoesNotExist:
+                pass
+    if len(Products)==0:
+        empty= True
+    else:
+        empty= False
+    return render(request, "auctions/watchlist.html",{
+        "products": Products,
+        "empty": empty
+    })
 
 
 @login_required(login_url='/login')
 def watchlist(request,name):
-    w = Watchlist.objects.filter(
-        name=name, user=request.user.username)
-    comments= Comment.objects.filter(name=name)
-    if w:
-        w.delete()
-        product=Listing.objects.get(name=name)
-        added = Watchlist.objects.filter(
-            name=name, user=request.user.username)
-        return render(request, "auctions/product.html", {
-            "product": product,
-            "added": added,
-            "comments": comments
-        })
+    user=request.user.username
+    try:
+        obj=ProductList.objects.get(user=user)
+    except ProductList.DoesNotExist:
+        obj=None
+    if(obj is not None):
+        jsonDec = json.decoder.JSONDecoder()
+        List = jsonDec.decode(obj.products)
+        List.append(name)
+        obj.products=json.dumps(List)
+        obj.save()
     else:
-        product = Listing.objects.get(name=name)
-        a = Watchlist()
-        a.user= request.user.username
-        a.name= product.name
-        a.save()
-        added = Watchlist.objects.filter(
-            name=name, user=request.user.username)
-        return render(request, "auctions/product.html", {
-            "product": product,
-            "added": added,
-            "comments": comments
-        })
+        p=ProductList()
+        p.user=user
+        List= []
+        List.append(name)
+        p.products=json.dumps(List)
+        p.save()
+    return HttpResponseRedirect(reverse("Watchlist"))
+
+
+@login_required(login_url='/login')
+def closedlisting(request):
+    winners= Winner.objects.all()
+    empty=False
+    if len(winners)==0:
+        empty =True
+    return render(request,"auctions/closedlisting.html",{
+        "winners": winners,
+        "empty": empty
+    })
+
+@login_required(login_url='/login')
+def closebid(request, name):
+    winobj = Winner()
+    listobj = Listing.objects.get(name=name)
+    obj = get_object_or_None(Bid, name=name, bid=listobj.current_bid)
+    if not obj:
+        message = "Deleting Bid"
+        msg_type = "danger"
+    else:
+        bidobj = Bid.objects.get(name=name,bid=listobj.current_bid)
+        winobj.seller = request.user.username
+        winobj.winner = bidobj.user
+        winobj.winprice = listobj.current_bid
+        winobj.name = name
+        winobj.save()
+        message = "Bid Closed"
+        msg_type = "success"
+        # removing from Bid
+        bidobj.delete()
+    # removing from watchlist
+    if ProductList.objects.filter(user=winobj.winner):
+        ob = ProductList.objects.filter(user=winobj.winner)
+        jsonDec = json.decoder.JSONDecoder()
+        List = jsonDec.decode(ob.products)
+        List.remove(name)
+        ob.products=json.dumps(List)
+        ob.save()
+    # removing from Comment
+    if Comment.objects.filter(name=name):
+        commentobj = Comment.objects.filter(name=name)
+        commentobj.delete()
+    # removing from Listing
+    listobj.delete()
+    # retrieving the new products list after adding and displaying
+    # list of products available in WinnerModel
+    winners = Winner.objects.all()
+    # checking if there are any products
+    empty = False
+    if len(winners) == 0:
+        empty = True
+    return render(request, "auctions/closedlisting.html", {
+        "winners": winners,
+        "empty": empty,
+        "message": message,
+        "msg_type": msg_type
+    })
